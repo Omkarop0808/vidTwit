@@ -18,6 +18,10 @@ import UpdateTweet from './pages/UpdateTweet'
 import DeleteTweet from './pages/DeleteTweet'
 import UpdateProfile from './pages/UpdateProfile'
 import ProtectedRoute from './compunents/ProtectedRoute'
+import PlaylistsPage from './pages/PlaylistsPage'
+import PlaylistDetailPage from './pages/PlaylistDetailPage'
+import CreatePlaylistPage from './pages/CreatePlaylistPage'
+import EditPlaylistPage from './pages/EditPlaylistPage'
 
 function App() {
 
@@ -33,6 +37,8 @@ function App() {
         <Route path="/watch/:videoId" element={<VideoPlayerPage />} />
         <Route path="/tweet/:tweetId" element={<TweetPage />} />
         <Route path="/tweets" element={<TweetPage />} />
+        <Route path="/playlists" element={<PlaylistsPage />} />
+        <Route path="/playlist/:playlistId" element={<PlaylistDetailPage />} />
 
         {/* Secure routes */}
         <Route element={<ProtectedRoute />}>
@@ -44,6 +50,8 @@ function App() {
           <Route path="/update-tweet/:tweetId" element={<UpdateTweet />} />
           <Route path="/delete-tweet/:tweetId" element={<DeleteTweet />} />
           <Route path="/update-profile" element={<UpdateProfile />} />
+          <Route path="/create-playlist" element={<CreatePlaylistPage />} />
+          <Route path="/playlist/:playlistId/edit" element={<EditPlaylistPage />} />
         </Route>
       </Routes>
 
