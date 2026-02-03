@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getAllVideos, getTweets } from "../api"
+import { getAllVideos, getTweets, getUserPlaylists } from "../api"
 import { Link } from "react-router-dom"
 import { useAuth } from '../context/authContext'
 import dayjs from "dayjs"
@@ -7,6 +7,7 @@ import dayjs from "dayjs"
 export default function Home() {
   const [videos, setVideos] = useState([])
   const [tweets, setTweets] = useState([])
+  const [playlists, setPlaylists] = useState([])
   const [loading, setLoading] = useState(true)
 
   const { user } = useAuth()
@@ -22,6 +23,17 @@ export default function Home() {
         const res = await getAllVideos();
         setVideos(res.data?.data?.videos || []);
         setTweets(tweetRes.data?.data || [])
+
+        // Fetch playlists if user is logged in
+        if (user?._id) {
+          try {
+            const playlistRes = await getUserPlaylists(user._id)
+            setPlaylists(playlistRes.data?.data || [])
+          } catch (playlistError) {
+            console.error("Failed to fetch playlists:", playlistError)
+            // Don't fail the whole page if playlists fail
+          }
+        }
       } catch (error) {
         console.error("Failed to fetch videos or tweets:", error)
       } finally {
@@ -30,7 +42,7 @@ export default function Home() {
     }
 
     fetchContent()
-  }, [])
+  }, [user?._id])
 
   // Convert seconds to "mm:ss" format
   const formatDuration = (seconds) => {
@@ -101,6 +113,64 @@ export default function Home() {
               </>
             )}
           </div>
+
+          {/* Playlists Section */}
+          {user && (
+            <div className="p-6 bg-gray-950 text-white/90 rounded-xl shadow">
+              <h2 className="text-xl font-semibold mb-4">My Playlists</h2>
+              {playlists.length === 0 ? (
+                <div className="text-center py-4">
+                  <p className="text-gray-400 mb-4">No playlists yet</p>
+                  <Link 
+                    to="/create-playlist" 
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition text-sm"
+                  >
+                    Create Your First Playlist
+                  </Link>
+                </div>
+              ) : (
+                <>
+                  <ul className="space-y-3">
+                    {playlists.slice(0, 4).map((playlist) => (
+                      <li key={playlist._id}>
+                        <Link 
+                          to={`/playlist/${playlist._id}`} 
+                          className="block p-3 rounded border border-gray-600 bg-gray-900 hover:bg-gray-800 transition-all"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-gray-800 rounded flex items-center justify-center flex-shrink-0">
+                              {playlist.videos && playlist.videos.length > 0 && playlist.videos[0].thumbnail ? (
+                                <img
+                                  src={playlist.videos[0].thumbnail}
+                                  alt={playlist.name}
+                                  className="w-full h-full object-cover rounded"
+                                />
+                              ) : (
+                                <svg className="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" />
+                                </svg>
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-sm truncate">{playlist.name}</p>
+                              <p className="text-xs text-gray-400">
+                                {playlist.videos?.length || 0} videos
+                              </p>
+                            </div>
+                          </div>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                  {playlists.length > 4 && (
+                    <Link to="/playlists" className="mt-4 inline-block text-blue-500 hover:underline">
+                      View all playlists →
+                    </Link>
+                  )}
+                </>
+              )}
+            </div>
+          )}
 
 
           {/* Tweets Section */}

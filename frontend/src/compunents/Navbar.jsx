@@ -41,7 +41,7 @@ export default function Navbar() {
         <ul className="menu menu-horizontal px-1 ">
           <li  className="hover:bg-gray-800 rounded-md"><Link to="/">Home</Link></li>
           <li  className="hover:bg-gray-800 rounded-md"><Link to="/videos">Videos</Link></li>
-          {/* <li  className="hover:bg-gray-800 rounded-md"><Link to="/playlists">Playlists</Link></li> */}
+          <li  className="hover:bg-gray-800 rounded-md"><Link to="/playlists">Playlists</Link></li>
           <li  className="hover:bg-gray-800 rounded-md"><Link to="/tweets">Tweets</Link></li>
         </ul>
       </div>
@@ -112,7 +112,7 @@ export default function Navbar() {
           <ul className="menu menu-vertical w-full  space-y-2">
             <li><Link to="/">Home</Link></li>
             <li><Link to="/videos">Videos</Link></li>
-            {/* <li><Link to="/playlists">Playlists</Link></li> */}
+            <li><Link to="/playlists">Playlists</Link></li>
             <li><Link to="/tweets">Tweets</Link></li>
             {user ? (
               <>
